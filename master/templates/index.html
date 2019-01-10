@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> All sources </title>
+  </head>
+  <body>
+    <ul>
+      {% for pkg in packages %}
+      <li>
+        <a href="/sources/{{ pkg.name }}"> {{ pkg.name }} </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

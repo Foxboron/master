@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> {{ package }} </title>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <th> Version </th>
+        <th> Timestamp </th>
+        <th> Buildinfo </th>
+        <th> in-toto metadata </th>
+      </tr>
+      {% for entry in entries %}
+      <tr>
+        <td> {{ package }}-{{ entry[0].version }}</td>
+        <td> {{entry[1].created }} </td>
+        <td> <a href="/sources/{{ package }}/{{ entry[0].version }}/buildinfo"> Link </a> </td>
+        <td> <a href="/sources/{{ package }}/{{ entry[0].version }}/metadata"> Link </a> </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
