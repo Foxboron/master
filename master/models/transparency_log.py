@@ -66,10 +66,6 @@ class Node(db.Model):
         if self.children_left:
             return self.children_left
 
-    # def is_root(self):
-    #     """ Root nodes should have no parent, but a right and left node """
-    #     return self.parent is None and self.right and self.left
-
     def get_hash(self):
         if not self.hash:
             h = hashlib.sha512()
@@ -82,12 +78,12 @@ class Node(db.Model):
             db.session.commit()
         return self.hash
 
-    def recalc_hash(self):
-        self.hash = hashlib.sha512()
-        for k, v in self.data.items():
-            self.hash.update((k+v).encode('utf-8'))
-        self.append_parents()
-        return self.hash
+    # def recalc_hash(self):
+    #     self.hash = hashlib.sha512()
+    #     for k, v in self.data.items():
+    #         self.hash.update((k+v).encode('utf-8'))
+    #     self.append_parents()
+    #     return self.hash
 
     def append_parents(self, h):
         if self.left:
