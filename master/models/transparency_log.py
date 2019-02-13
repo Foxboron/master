@@ -142,15 +142,16 @@ def get_subtrees():
 
 def append(data):
     if get_leafs().count() == 0:
-        create_data_node(data)
-        return
+        n = create_data_node(data)
+        return n
     subtrees = get_subtrees()
     new_node = create_data_node(data)
+    ret = new_node
     for node in reversed(subtrees):
         new_parent = create_level_node(node, new_node)
         new_node = new_parent
         db.session.commit()
-    return
+    return ret
 
 
 def get_all_nodes_in_tree(self):

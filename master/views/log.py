@@ -84,16 +84,46 @@ def log_get_validation_id(id):
     return {"root": root.to_json(),
             "path": path}
 
+
+@app.route("/api/log/tree/validate/hash/<hash>")
+@json_response
+def log_get_validation(hash):
+    node = (db.session.query(Node).filter(Node.hash == hash)).first()
+    if node is None:
+        return "No such object", 400
+    return _get_validation_chain(node)
+
+
+@app.route("/api/log/tree/validate/id/<id>")
+@json_response
+def log_get_validation_id(id):
+    node = (db.session.query(Node).filter(Node.id == id)).first()
+    if node is None:
+        return "No such object", 400
+    return _get_validation_chain(node)
+
+
+@app.route("/api/log/tree/validate/chain", methods=['POST'])
+@json_response
+def log_validate_chain(id):
+    data = request.get_json(silent=True)
+    if not data.get("root"):
+        return {"status": "No valid root"}, 400
+    if not data.get("path"):
+        return {"status": "No valid path"}, 400
+    ret = validate_chain(data["root"], data["chain"])
+    if ret:
+        return {"status": ret,
+                "root": data["root"]}
+    return {"status": ret}, 300
+
+
 @app.route("/api/log/tree/append", methods=["POST"])
 def log_tree_append():
     data = request.get_json(silent=True)
-    if get_leafs().count() == 0:
-        create_data_node(data)
-        return
-    subtrees = get_subtrees()
-    new_node = create_data_node(data)
-    for node in reversed(subtrees):
-        new_parent = create_level_node(node, new_node)
-        new_node = new_parent
-        db.session.commit()
-    return "Ok"
+    try:
+        node = append(data)
+    except:
+        return {"status": "Could not append"}, 400
+    return {"status": "ok",
+            "node": node.to_json()}, 400
