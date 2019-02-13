@@ -210,6 +210,6 @@ def validate_chain(root, chain):
             h = hashlib.sha512()
             h.update(("level"+s+node[1]["hash"]).encode('utf-8'))
             s = h.hexdigest()
-    return root.get_hash() == s
+    return root["hash"] == s
 
 

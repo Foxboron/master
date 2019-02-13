@@ -2,7 +2,9 @@ import hashlib
 
 from master.db import db
 from master.app import app
-from master.models import Node, create_level_node, create_data_node, get_root_node, get_levels, get_leafs, validate_chain, get_subtrees
+from master.models import Node
+from master.models import get_root_node, append, get_levels
+from master.models import get_leafs, validate_chain
 from master.views.models import json_response
 
 from flask import request
@@ -33,46 +35,27 @@ def log_get_tree_root():
     print(get_leafs().count())
     return get_root_node()
 
+
 @app.route("/api/log/tree")
 @json_response
 def log_get_tree_all():
     return (db.session.query(Node)).all()
+
 
 @app.route("/api/log/tree/id/<id>")
 @json_response
 def log_get_id(id):
     return (db.session.query(Node).filter(Node.id == id)).first()
 
+
 @app.route("/api/log/tree/hash/<hash>")
 @json_response
 def log_get_hash(hash):
     return (db.session.query(Node).filter(Node.hash == hash)).first()
 
-@app.route("/api/log/tree/validate/hash/<hash>")
-@json_response
-def log_get_validation(hash):
-    node = (db.session.query(Node).filter(Node.hash == hash)).first()
-    if node is None:
-        return "No such object"
-    side = lambda x: "RIGHT" if x.is_right() else "LEFT"
-    # ({LEFT,RIGHT}, Node)
-    path = [(side(node), node)]
-    while node.parent is not None:
-        if node.is_left():
-            path.append(("RIGHT", node.get_child().right))
-        elif node.is_right():
-            path.append(("LEFT", node.get_child().left))
-        node = node.get_child()
-    return path
 
-@app.route("/api/log/tree/validate/id/<id>")
-@json_response
-def log_get_validation_id(id):
-    node = (db.session.query(Node).filter(Node.id == id)).first()
-    if node is None:
-        return "No such object"
+def _get_validation_chain(node):
     side = lambda x: "RIGHT" if x.is_right() else "LEFT"
-    # ({LEFT,RIGHT}, Node)
     path = [(side(node), node.to_json())]
     while node.get_child() is not None:
         if node.is_left():
