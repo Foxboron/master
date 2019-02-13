@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import ClauseElement
 from .app import app
 
+db = None
 
 def db_get(self, model, defaults=None, **kwargs):
     return self.session.query(model).filter_by(**kwargs).first()

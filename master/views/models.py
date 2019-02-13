@@ -1,4 +1,6 @@
+import uuid
 from functools import wraps
+from collections import OrderedDict
 
 from flask import json, request
 from debian.deb822 import Deb822
@@ -15,20 +17,31 @@ def json_response(func):
         code = 200
         if isinstance(response, tuple):
             response, code = response
-        dump = json.dumps(list(response), indent=2, sort_keys=False)
+        if isinstance(response, list):
+            if hasattr(response[0], "to_json"):
+                response = list(map(lambda x: x.to_json(), response))
+        if isinstance(response, OrderedDict):
+            response = [response.to_json()]
+        if hasattr(response, "to_json"):
+            response = response.to_json()
+        print(response)
+        dump = json.dumps(response, indent=2, sort_keys=False)
         return dump, code, {'Content-Type': 'application/json; charset=utf-8'}
     return wrapped
 
 
-@app.route('/api/buildinfo', methods=['PUT', 'POST', 'GET'])
+@app.route('/api/create/buildinfo', methods=['PUT', 'POST', 'GET'])
 def api_buildinfo_id():
+    id = uuid.uuid4()
+    print(id)
     pkg = db.get_or_create(Package, name="Test")
-    # ver = db.get_or_create(Version, version="1.0.0", package=pkg)
+    ver = db.get_or_create(Version, version="1.0.0", package=pkg)
+    db.get_or_create(LinkMetadata, version=ver, text="Test", uuid=id)
+    db.get_or_create(Buildinfo, version=ver, text="Test", uuid=id)
+    id = uuid.uuid4()
     ver2 = db.get_or_create(Version, version="1.2.0", package=pkg)
-    # db.get_or_create(LinkMetadata, version=ver, text="Test")
-    # db.get_or_create(Buildinfo, version=ver, text="Test")
-    db.get_or_create(LinkMetadata, version=ver2, text="Test3")
-    db.get_or_create(Buildinfo, version=ver2, text="Test3")
+    db.get_or_create(LinkMetadata, version=ver2, text="Test3", uuid=id)
+    db.get_or_create(Buildinfo, version=ver2, text="Test3", uuid=id)
     db.session.commit()
     return "Ok?"
 
@@ -51,11 +64,9 @@ def new_build():
     db.get_or_create(LinkMetadata, version=ver)
     db.get_or_create(Buildinfo, version=ver)
     db.session.commit()
-
     return
 
 @app.route('/api/buildinfos', methods=['PUT', 'POST', 'GET'])
 @json_response
 def api_buildinfos():
-    entries = (db.session.query(Package)).all()
-    return map(lambda x: x.to_json(), entries)
+    return (db.session.query(Package)).all()
