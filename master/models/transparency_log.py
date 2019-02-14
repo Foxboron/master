@@ -79,13 +79,6 @@ class Node(db.Model):
             db.session.commit()
         return self.hash
 
-    # def recalc_hash(self):
-    #     self.hash = hashlib.sha512()
-    #     for k, v in self.data.items():
-    #         self.hash.update((k+v).encode('utf-8'))
-    #     self.append_parents()
-    #     return self.hash
-
     def append_parents(self, h):
         if self.left:
             h.update(self.left.get_hash().encode('utf-8'))
@@ -106,7 +99,7 @@ class Node(db.Model):
         j["parent"] = ""
         j["data"] = {}
         if self.get_child():
-            j["parent"] = self.get_child().hash
+            j["parent"] = self.get_child().get_hash()
         if self.right:
             j["right"] = self.right.get_hash()
         if self.left:
@@ -159,18 +152,13 @@ def append(data):
     return ret
 
 
-def get_all_nodes_in_tree(self):
-    nodes = []
-    nodes.append(self.root_node.left)
-    nodes.append(self.root_node.right)
-    for v in reversed(self.table.values()):
-        if v in nodes:
-            nodes.append(v.left)
-            nodes.append(v.right)
-    return nodes
-
-
 def create_level_node(left, right):
+    # Invalidate old children.
+    # Should probably do this in the ORM.
+    right.children_left = None
+    right.children_right = None
+    left.children_left = None
+    left.children_right = None
     if left is None:
         raise Exception("Left is None")
     if right is None:

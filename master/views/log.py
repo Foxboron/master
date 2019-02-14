@@ -3,7 +3,7 @@ import hashlib
 from master.db import db
 from master.app import app
 from master.models import Node
-from master.models import get_root_node, append, get_levels
+from master.models import get_root_node, append, get_levels, get_all_nodes
 from master.models import get_leafs, validate_chain, get_all_nodes_in_tree, graphviz_tree
 from master.views.models import json_response
 
@@ -13,20 +13,21 @@ from flask import request
 
 @app.route("/api/log/new")
 def log_new():
-    # for i in range(1, 51):
-    #     data = {"name": f"Name-{i}",
-    #             "data": f"Datablock-{i}"}
-        # append(data)
-
-    # node1 = create_data_node({"data": "test1"})
-    # node2 = create_data_node({"data": "test2"})
-    # create_level_node(node1, node2)
-    # print("yay")
-    # node3 = create_level_node(node1, node2)
-    # print(node3.left)
-    # print(node3.right)
+    for i in range(1, 60):
+        data = {"name": f"Name-{i}",
+                "data": f"Datablock-{i}"}
+        node = append(data)
+        print(f"Created node {i}")
     return "Ok?"
 
+@app.route("/api/log/tree/stats")
+@json_response
+def log_get_tree_stats():
+    return {"root node": get_root_node().to_json(),
+            "level nodes": get_levels().count(),
+            "leaf nodes": get_leafs().count(),
+            "total nodes": get_all_nodes().count(),
+            "bytes used": db.engine.execute("SELECT sum(pgsize-unused) FROM dbstat WHERE name='node';").first()[0]}
 
 @app.route("/api/log/tree/root")
 @json_response
@@ -78,16 +79,20 @@ def log_get_validation(hash):
     node = (db.session.query(Node).filter(Node.hash == hash)).first()
     if node is None:
         return "No such object", 400
-    return _get_validation_chain(node)
+    path = _get_validation_chain(node)
+    print(validate_chain(path["root"], path["path"]))
+    return path
 
 
 @app.route("/api/log/tree/validate/id/<id>")
 @json_response
 def log_get_validation_id(id):
-    node = (db.session.query(Node).filter(Node.id == id)).first()
+    node = (db.session.query(Node).filter(Node.leaf_index == id)).first()
     if node is None:
         return "No such object", 400
-    return _get_validation_chain(node)
+    path = _get_validation_chain(node)
+    print(validate_chain(path["root"], path["path"]))
+    return path
 
 
 @app.route("/api/log/tree/validate/chain", methods=['POST'])

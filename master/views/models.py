@@ -24,7 +24,6 @@ def json_response(func):
             response = [response.to_json()]
         if hasattr(response, "to_json"):
             response = response.to_json()
-        print(response)
         dump = json.dumps(response, indent=2, sort_keys=False)
         return dump, code, {'Content-Type': 'application/json; charset=utf-8'}
     return wrapped
