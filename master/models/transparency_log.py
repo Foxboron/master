@@ -16,6 +16,7 @@ class Node(db.Model):
     id = db.Column(
         db.Integer(), index=True, unique=True, primary_key=True, autoincrement=True
     )
+    leaf_index = db.Column(db.Integer(), default=0)
     type = db.Column(db.String(10), nullable=False)
     hash = db.Column(db.String(128))
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -48,7 +49,7 @@ class Node(db.Model):
 
     def get_name(self):
         """ Internal function to generate graphviz """
-        return self.get_hash().hexdigest()[:10].upper()
+        return self.get_hash()[:10].upper()
 
     def is_left(self):
         if self.children_left:
@@ -115,6 +116,10 @@ class Node(db.Model):
         return j
 
 
+def get_all_nodes():
+    return (db.session.query(Node).order_by(Node.id.desc()))
+
+
 def get_leafs():
     return db.session.query(Node).filter(Node.type == "data")
 
@@ -174,29 +179,39 @@ def create_level_node(left, right):
 
 
 def create_data_node(data):
-    return db.create(Node, type="data", data=data)
+    return db.create(Node, type="data", data=data, leaf_index=get_leafs().count()+1)
 
-# def graphviz_tree(number, tree):
-#     s = []
-#     s.append("graph graphname {")
-#     s.append("labelloc=\"t\";")
-#     s.append(f"label=\"Nodes: {number}\";")
-#     try:
-#         s.append(f"\"{t.root_node.get_name()}\";")
-#         s.append(f"\"{t.root_node.get_name()}\" -- \"{t.root_node.left.get_name()}\";")
-#         s.append(f"\"{t.root_node.get_name()}\" -- \"{t.root_node.right.get_name()}\";")
-#     except: pass
-#     for v in tree:
-#         if not v:
-#             continue
-#         if v:
-#             s.append(f"\"{v.get_name()}\";")
-#         if v.left:
-#             s.append(f"\"{v.get_name()}\" -- \"{v.left.get_name()}\";")
-#         if v.right:
-#             s.append(f"\"{v.get_name()}\" -- \"{v.right.get_name()}\";")
-#     s.append("}")
-#     return "\n".join(s)
+
+def get_all_nodes_in_tree():
+    nodes = []
+    root_node = get_root_node()
+    nodes.append(root_node)
+    # nodes.append(root_node.left)
+    # nodes.append(root_node.right)
+    for v in get_all_nodes().all():
+        if v in nodes:
+            nodes.append(v.left)
+            nodes.append(v.right)
+    return nodes
+
+
+def graphviz_tree(number, tree):
+    s = []
+    s.append("graph graphname {")
+    s.append("labelloc=\"t\";")
+    s.append(f"label=\"Nodes: {number}\";")
+    for v in tree:
+        if not v:
+            continue
+        # if v:
+        #     s.append(f"\"{v.get_name()}\";")
+        if v.left:
+            s.append(f"\"{v.get_name()}\" -- \"{v.left.get_name()}\";")
+        if v.right:
+            s.append(f"\"{v.get_name()}\" -- \"{v.right.get_name()}\";")
+    s.append("}")
+    return "\n".join(s)
+
 
 def validate_chain(root, chain):
     # Preload the requested node

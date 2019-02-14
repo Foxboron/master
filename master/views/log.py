@@ -4,7 +4,7 @@ from master.db import db
 from master.app import app
 from master.models import Node
 from master.models import get_root_node, append, get_levels
-from master.models import get_leafs, validate_chain
+from master.models import get_leafs, validate_chain, get_all_nodes_in_tree, graphviz_tree
 from master.views.models import json_response
 
 from flask import request
@@ -42,11 +42,15 @@ def log_get_tree_all():
     return (db.session.query(Node)).all()
 
 
+@app.route("/api/log/tree/leaf/index/<id>")
+@json_response
+def log_get_leaf_index(id):
+    return (db.session.query(Node).filter(Node.leaf_index == id)).first()
+
 @app.route("/api/log/tree/id/<id>")
 @json_response
 def log_get_id(id):
     return (db.session.query(Node).filter(Node.id == id)).first()
-
 
 @app.route("/api/log/tree/hash/<hash>")
 @json_response
@@ -102,6 +106,7 @@ def log_validate_chain(id):
 
 
 @app.route("/api/log/tree/append", methods=["POST"])
+@json_response
 def log_tree_append():
     data = request.get_json(silent=True)
     try:
@@ -110,3 +115,9 @@ def log_tree_append():
         return {"status": "Could not append"}, 400
     return {"status": "ok",
             "node": node.to_json()}, 400
+
+
+@app.route("/api/log/tree/graphviz")
+def log_tree_graphviz():
+    nodes = get_all_nodes_in_tree()
+    return graphviz_tree(get_leafs().count(), nodes)
