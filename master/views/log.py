@@ -1,4 +1,7 @@
 import hashlib
+import time
+
+from flask import request, g
 
 from master.db import db
 from master.app import app
@@ -7,27 +10,46 @@ from master.models import get_root_node, append, get_levels, get_all_nodes
 from master.models import get_leafs, validate_chain, get_all_nodes_in_tree, graphviz_tree
 from master.views.models import json_response
 
-from flask import request
-
-
 
 @app.route("/api/log/new")
 def log_new():
-    for i in range(1, 60):
+    for i in range(1, 2):
         data = {"name": f"Name-{i}",
                 "data": f"Datablock-{i}"}
         node = append(data)
         print(f"Created node {i}")
     return "Ok?"
 
+
 @app.route("/api/log/tree/stats")
 @json_response
 def log_get_tree_stats():
+    engine = db.get_engine().name
+    bytes_used = 0
+    if engine == "postgresql":
+        if "humanize" in request.args.keys():
+            bytes_used = db.engine.execute("SELECT pg_size_pretty (pg_relation_size('node'));").first()[0]
+        else:
+            bytes_used = db.engine.execute("SELECT pg_relation_size('node');").first()[0]
+    elif engine == "sqlite":
+        suffixes = ['bytes', 'kB', 'mB', 'gB', 'tB', 'pB']
+        def humansize(nbytes):
+            i = 0
+            while nbytes >= 1024 and i < len(suffixes)-1:
+                nbytes /= 1024.
+                i += 1
+            f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
+            return '%s %s' % (f, suffixes[i])
+        if "humanize" in request.args.keys():
+            bytes_used = humansize(db.engine.execute("SELECT sum(pgsize-unused) FROM dbstat WHERE name='node';").first()[0])
+        else:
+            bytes_used = db.engine.execute("SELECT sum(pgsize-unused) FROM dbstat WHERE name='node';").first()[0]
     return {"root node": get_root_node().to_json(),
             "level nodes": get_levels().count(),
             "leaf nodes": get_leafs().count(),
             "total nodes": get_all_nodes().count(),
-            "bytes used": db.engine.execute("SELECT sum(pgsize-unused) FROM dbstat WHERE name='node';").first()[0]}
+            "bytes used": bytes_used}
+
 
 @app.route("/api/log/tree/root")
 @json_response

@@ -6,6 +6,8 @@ from collections import OrderedDict
 from master.db import db
 from .util import recurse
 
+from sqlalchemy import event
+
 from sqlalchemy_utils import JSONType
 
 
@@ -76,7 +78,6 @@ class Node(db.Model):
                     h.update((k+v).encode('utf-8'))
             self.append_parents(h)
             self.hash = h.hexdigest()
-            db.session.commit()
         return self.hash
 
     def append_parents(self, h):
@@ -108,6 +109,16 @@ class Node(db.Model):
             j["data"] = self.data
         return j
 
+
+@event.listens_for(Node, 'before_insert')
+def receive_before_insert(mapper, connection, target):
+    target.get_hash()
+    return target
+
+@event.listens_for(Node, 'after_update')
+def receive_before_insert(mapper, connection, target):
+    target.get_hash()
+    return target
 
 def get_all_nodes():
     return (db.session.query(Node).order_by(Node.id.desc()))
@@ -141,6 +152,7 @@ def get_subtrees():
 def append(data):
     if get_leafs().count() == 0:
         n = create_data_node(data)
+        db.session.commit()
         return n
     subtrees = get_subtrees()
     new_node = create_data_node(data)
