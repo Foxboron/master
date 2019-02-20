@@ -70,10 +70,12 @@ def log_get_tree_all():
 def log_get_leaf_index(id):
     return (db.session.query(Node).filter(Node.leaf_index == id)).first()
 
+
 @app.route("/api/log/tree/id/<id>")
 @json_response
 def log_get_id(id):
     return (db.session.query(Node).filter(Node.id == id)).first()
+
 
 @app.route("/api/log/tree/hash/<hash>")
 @json_response
@@ -141,7 +143,7 @@ def log_tree_append():
     except:
         return {"status": "Could not append"}, 400
     return {"status": "ok",
-            "node": node.to_json()}, 400
+            "node": node.to_json()}, 200
 
 
 @app.route("/api/log/tree/graphviz")

@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 requests
 python-debian
+psycopg2
