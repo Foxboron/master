@@ -104,7 +104,8 @@ def log_get_validation(hash):
     if node is None:
         return "No such object", 400
     path = _get_validation_chain(node)
-    print(validate_chain(path["root"], path["path"]))
+    path["validation"] = validate_chain(path["root"], path["path"])
+    print(path["validation"])
     return path
 
 
@@ -113,9 +114,10 @@ def log_get_validation(hash):
 def log_get_validation_id(id):
     node = (db.session.query(Node).filter(Node.leaf_index == id)).first()
     if node is None:
-        return "No such object", 400
+        return {"status": "No such object"}, 400
     path = _get_validation_chain(node)
-    print(validate_chain(path["root"], path["path"]))
+    path["validation"] = validate_chain(path["root"], path["path"])
+    print(path["validation"])
     return path
 
 
