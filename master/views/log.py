@@ -136,6 +136,18 @@ def log_validate_chain(id):
     return {"status": ret}, 300
 
 
+@app.before_request
+def start_timer():
+    g.start = time.time()
+
+@app.after_request
+def log_request(response):
+    now = time.time()
+    duration = now - g.start
+    response.headers["X-Duration"] = duration
+    return response
+
+
 @app.route("/api/log/tree/append", methods=["POST"])
 @json_response
 def log_tree_append():
