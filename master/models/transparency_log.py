@@ -23,7 +23,7 @@ class Node(db.Model):
     hash = db.Column(db.String(128))
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     data = db.Column(JSONType)
-    height = db.Column(db.Integer(), default=1)
+    height = db.Column(db.Integer(), default=0)
 
     children_right_id = db.Column(db.Integer, db.ForeignKey("node.id"))
     children_left_id = db.Column(db.Integer, db.ForeignKey("node.id"))
@@ -69,8 +69,8 @@ class Node(db.Model):
         if self.children_left:
             return self.children_left
 
-    def get_hash(self):
-        if not self.hash:
+    def get_hash(self, new=None):
+        if not self.hash or new:
             h = hashlib.sha512()
             h.update(self.type.encode('utf-8'))
             if self.data:
@@ -116,8 +116,8 @@ def receive_before_insert(mapper, connection, target):
     return target
 
 @event.listens_for(Node, 'after_update')
-def receive_before_insert(mapper, connection, target):
-    target.get_hash()
+def receive_after_update(mapper, connection, target):
+    target.get_hash(new=True)
     return target
 
 def get_all_nodes():
@@ -144,7 +144,7 @@ def get_subtrees():
     while loose_leafs:
         subtrees.append(the_node.left)
         the_node = the_node.right
-        loose_leafs = loose_leafs - 2**int(math.log(loose_leafs, 2))
+        loose_leafs -= 2**int(math.log(loose_leafs, 2))
     subtrees.append(the_node)
     return subtrees
 
@@ -155,6 +155,12 @@ def append(data):
         db.session.commit()
         return n
     subtrees = get_subtrees()
+    # If there are less subtrees we can't connect the new
+    # root in a proper way.
+    if len(subtrees) > 2:
+        root = get_root_node()
+        db.session.delete(root)
+        db.session.commit()
     new_node = create_data_node(data)
     ret = new_node
     for node in reversed(subtrees):
@@ -162,6 +168,75 @@ def append(data):
         new_node = new_parent
         db.session.commit()
     return ret
+
+def get_heights(num):
+    ret = []
+    while num:
+        height = math.floor(math.log(num, 2))
+        num -= 2**height
+        ret.append(height)
+    return ret
+
+def subroots(id, height):
+    node = (db.session.query(Node)
+            .filter(Node.leaf_index == id)
+            .filter(Node.type == "data")
+            ).first()
+    i = 0
+    while i < height:
+        next_node = node.get_child()
+        i += 1
+        node = next_node
+    return node
+
+def consistency_path(position):
+    heights = get_heights(position)
+    path = []
+    start = 1
+    for h in heights:
+        next_subroot = subroots(start, h)
+        if next_subroot.get_child() and next_subroot.get_child().get_child():
+            if next_subroot.get_child().is_left():
+                path.append(("LEFT", next_subroot))
+            else:
+                path.append(("RIGHT", next_subroot))
+        else:
+            if next_subroot.is_left():
+                path.append(("LEFT", next_subroot))
+            else:
+                path.append(("RIGHT", next_subroot))
+        start += 2**h
+    path[-1] = ("RIGHT", path[-1][1])
+    other_side = []
+    subpath = path[:]
+    while subpath[-1][-1].get_child() is not None:
+        last_root = subpath[-1][-1]
+        if last_root is last_root.get_child().left:
+            if last_root.get_child().is_right():
+                other_side.append(("RIGHT", last_root.get_child().right))
+            else:
+                other_side.append(("LEFT", last_root.get_child().right))
+            subpath = subpath[:-1]
+        else:
+            subpath = subpath[:-2]
+        subpath.append(("", last_root.get_child()))
+
+    full_path = path+other_side
+    # print(f"Path: {path}")
+    # print(f"Otherside: {other_side}")
+    # print(f"Full path: {full_path}")
+    # print(f"Index: {len(path)-1}")
+
+    # IDK magic
+    path = [(side, node.to_json()) for side, node in path]
+    other_side = [(side, node.to_json()) for side, node in other_side]
+    full_path = path+other_side
+    n = len(path)-1
+    full_path = (full_path[n:] + full_path[:n])
+    path = [("LEFT", node) for side, node in path]
+    path = (path[n:] + path[:n])
+    return path, full_path
+
 
 
 def create_level_node(left, right):
@@ -175,7 +250,7 @@ def create_level_node(left, right):
         raise Exception("Left is None")
     if right is None:
         raise Exception("Right is None")
-    return db.create(Node, type="level", right=right, left=left)
+    return db.create(Node, type="level", right=right, left=left, height=left.height+1)
 
 
 def create_data_node(data):
@@ -186,8 +261,6 @@ def get_all_nodes_in_tree():
     nodes = []
     root_node = get_root_node()
     nodes.append(root_node)
-    # nodes.append(root_node.left)
-    # nodes.append(root_node.right)
     for v in get_all_nodes().all():
         if v in nodes:
             nodes.append(v.left)
@@ -215,6 +288,8 @@ def graphviz_tree(number, tree):
 
 def validate_chain(root, chain):
     # Preload the requested node
+    # clone list
+    chain = chain[:]
     s = chain.pop(0)[1]["hash"]
     for node in chain:
         if node[0] == "LEFT":
