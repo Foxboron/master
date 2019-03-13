@@ -189,7 +189,7 @@ def subroots(id, height):
         node = next_node
     return node
 
-def consistency_path(position):
+def inclusion_path(position):
     heights = get_heights(position)
     path = []
     start = 1
@@ -207,6 +207,16 @@ def consistency_path(position):
                 path.append(("RIGHT", next_subroot))
         start += 2**h
     path[-1] = ("RIGHT", path[-1][1])
+    return path
+
+def inclusion_proof(position):
+    path = [("LEFT", node.to_json()) for side, node in inclusion_path(position)]
+    n = len(path)-1
+    path = (path[n:] + path[:n])
+    return path
+
+def consistency_path(position):
+    path = inclusion_path(position)
     other_side = []
     subpath = path[:]
     while subpath[-1][-1].get_child() is not None:
@@ -220,18 +230,14 @@ def consistency_path(position):
         else:
             subpath = subpath[:-2]
         subpath.append(("", last_root.get_child()))
+    return path, other_side
 
-    full_path = path+other_side
-    # print(f"Path: {path}")
-    # print(f"Otherside: {other_side}")
-    # print(f"Full path: {full_path}")
-    # print(f"Index: {len(path)-1}")
-
-    # IDK magic
+def consistency_proof(position):
+    path, other_side = consistency_path(position)
     path = [(side, node.to_json()) for side, node in path]
+    n = len(path)-1
     other_side = [(side, node.to_json()) for side, node in other_side]
     full_path = path+other_side
-    n = len(path)-1
     full_path = (full_path[n:] + full_path[:n])
     path = [("LEFT", node) for side, node in path]
     path = (path[n:] + path[:n])
