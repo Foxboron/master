@@ -159,7 +159,7 @@ def append(data):
     subtrees = get_subtrees()
     # If there are less subtrees we can't connect the new
     # root in a proper way.
-    if len(subtrees) > 2:
+    if len(subtrees) >= 2:
         root = get_root_node()
         db.session.delete(root)
         db.session.commit()
