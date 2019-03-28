@@ -3,6 +3,7 @@ import math
 from datetime import datetime
 from collections import OrderedDict
 
+from master.keys import sign_data
 from master.db import db
 from .util import recurse
 
@@ -21,10 +22,10 @@ class Node(db.Model):
     leaf_index = db.Column(db.Integer(), default=0)
     type = db.Column(db.String(10), nullable=False)
     hash = db.Column(db.String(128))
+    signature = db.Column(db.String(128))
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     data = db.Column(JSONType)
     height = db.Column(db.Integer(), default=0)
-
     children_right_id = db.Column(db.Integer, db.ForeignKey("node.id"))
     children_left_id = db.Column(db.Integer, db.ForeignKey("node.id"))
 
@@ -94,6 +95,7 @@ class Node(db.Model):
         j["type"] = self.type
         j["created"] = self.created
         j["hash"] = self.get_hash()
+        j["signature"] = self.signature
         j["height"] = self.height
         j["right"] = ""
         j["left"] = ""
@@ -166,7 +168,9 @@ def append(data):
     for node in reversed(subtrees):
         new_parent = create_level_node(node, new_node)
         new_node = new_parent
-        db.session.commit()
+    signature = sign_data(new_node.hash)
+    new_node.signature = signature["sig"]
+    db.session.commit()
     return ret
 
 def get_heights(num):

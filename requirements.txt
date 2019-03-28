@@ -4,3 +4,5 @@ Flask-Migrate
 requests
 python-debian
 psycopg2
+securesystemslib[pynacl]
+securesystemslib[crypto]
