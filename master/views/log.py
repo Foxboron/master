@@ -130,6 +130,7 @@ def log_get_inclusion_proof(leafs=6, old_hash="64fd4d81ed081f789ca5827f9a3f05215
             "path": old_path}
 
 @app.route("/api/log/tree/consistency/<old_hash>/<leafs>")
+@app.route("/api/log/tree/consistency/<int:leafs>")
 @app.route("/api/log/tree/consistency/")
 @json_response
 def log_get_consistency_proof(leafs=6, old_hash="64fd4d81ed081f789ca5827f9a3f05215a58a66c23d1ba6c8986ec02e729464a2c5ca0cd881931ea14d8bc79087976ee9de07a8cf7c13d1f1a11aa6180d2f261"):

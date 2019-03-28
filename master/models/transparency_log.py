@@ -210,7 +210,7 @@ def inclusion_path(position):
             else:
                 path.append(("RIGHT", next_subroot))
         start += 2**h
-    path[-1] = ("RIGHT", path[-1][1])
+    path[-1] = ("LEFT", path[-1][1])
     return path
 
 def inclusion_proof(position):
@@ -218,6 +218,37 @@ def inclusion_proof(position):
     n = len(path)-1
     path = (path[n:] + path[:n])
     return path
+
+
+def straighten_path(signed_hashes, start):
+    signed_hashes = list(signed_hashes)
+    if not signed_hashes: return None
+    if len(signed_hashes) <= 1: return signed_hashes[0][1]
+    i = start
+    ret = []
+    h = list(signed_hashes[i])
+    h[0] = "LEFT"
+    ret.append(h)
+    while len(signed_hashes) > 1:
+        if signed_hashes[i][0] == "LEFT":
+            if i == 0: new_sign = "LEFT"
+            else: new_sign = signed_hashes[i + 1][0]
+            new_hash = (signed_hashes[i][1], signed_hashes[i + 1][1])
+            h = list(signed_hashes[i+1])
+            h[0] = "RIGHT"
+            ret.append(h)
+            move = +1
+        else:
+            new_sign = signed_hashes[i - 1][0]
+            new_hash = (signed_hashes[i - 1][1], signed_hashes[i][1])
+            h = list(signed_hashes[i-1])
+            h[0] = "LEFT"
+            ret.append(h)
+            move = -1
+        signed_hashes[i] = (new_sign, new_hash)
+        del signed_hashes[i+move]
+        if move < 0: i -= 1
+    return ret
 
 def consistency_path(position):
     path = inclusion_path(position)
@@ -241,8 +272,7 @@ def consistency_proof(position):
     path = [(side, node.to_json()) for side, node in path]
     n = len(path)-1
     other_side = [(side, node.to_json()) for side, node in other_side]
-    full_path = path+other_side
-    full_path = (full_path[n:] + full_path[:n])
+    full_path = straighten_path(path+other_side, n)
     path = [("LEFT", node) for side, node in path]
     path = (path[n:] + path[:n])
     return path, full_path
