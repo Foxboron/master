@@ -4,5 +4,10 @@ Flask-Migrate
 requests
 python-debian
 psycopg2
+sqlalchemy_utils
+cryptography
+pynacl
+six
+colorama
 securesystemslib[pynacl]
 securesystemslib[crypto]

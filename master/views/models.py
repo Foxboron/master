@@ -32,7 +32,6 @@ def json_response(func):
 @app.route('/api/create/buildinfo', methods=['PUT', 'POST', 'GET'])
 def api_buildinfo_id():
     id = uuid.uuid4()
-    print(id)
     pkg = db.get_or_create(Package, name="Test")
     ver = db.get_or_create(Version, version="1.0.0", package=pkg)
     db.get_or_create(LinkMetadata, version=ver, text="Test", uuid=id)

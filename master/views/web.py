@@ -8,7 +8,6 @@ from flask import render_template
 @app.route("/")
 def index():
     entries = (db.session.query(Package)).all()
-    print(entries)
     return render_template("index.html", packages=entries)
 
 
