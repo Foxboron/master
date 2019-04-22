@@ -337,14 +337,12 @@ def validate_chain(root, chain):
     chain = chain[:]
     s = chain.pop(0)[1]["hash"]
     for node in chain:
+        h = hashlib.sha512()
         if node[0] == "LEFT":
-            h = hashlib.sha512()
             h.update(("level"+node[1]["hash"]+s).encode('utf-8'))
-            s = h.hexdigest()
         if node[0] == "RIGHT":
-            h = hashlib.sha512()
             h.update(("level"+s+node[1]["hash"]).encode('utf-8'))
-            s = h.hexdigest()
+        s = h.hexdigest()
     return root["hash"] == s
 
 
