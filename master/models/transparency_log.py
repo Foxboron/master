@@ -1,5 +1,6 @@
 import hashlib
 import math
+import json
 from datetime import datetime
 from collections import OrderedDict
 
@@ -8,6 +9,7 @@ from master.db import db
 from .util import recurse
 
 from sqlalchemy import event
+from sqlalchemy.dialects.postgresql import JSONB
 
 from sqlalchemy_utils import JSONType
 
@@ -24,7 +26,7 @@ class Node(db.Model):
     hash = db.Column(db.String(128))
     signature = db.Column(db.String(128))
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    data = db.Column(JSONType)
+    data = db.Column(JSONB)
     height = db.Column(db.Integer(), default=0)
     children_right_id = db.Column(db.Integer, db.ForeignKey("node.id"))
     children_left_id = db.Column(db.Integer, db.ForeignKey("node.id"))
@@ -108,7 +110,10 @@ class Node(db.Model):
         if self.left:
             j["left"] = self.left.get_hash()
         if self.data:
-            j["data"] = self.data
+            try:
+                j["data"] = json.loads(self.data)
+            except:
+                j["data"] = self.data
         return j
 
 
