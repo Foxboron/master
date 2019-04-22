@@ -1,0 +1,39 @@
+version: '3'
+services:
+    postgres:
+        image: "postgres:10"
+        environment:
+          POSTGRES_DB: logger
+          POSTGRES_USER: logger
+          POSTGRES_PASSWORD: logger
+        ports:
+            - 5432:5432
+        volumes:
+           - psql:/var/lib/postgresql/data
+        networks:
+            - masternet
+    master:
+        build: .
+        environment:
+            VIZUALISER_ENV: production
+            DATABASE_URL: "postgres://logger:logger@postgres:45792/logger"
+            PYTHONUNBUFFERED: 1
+        command:
+            - /bin/bash
+            - -c
+            - |
+                sleep 5 # Need to wait for postgresql
+                python main.py
+        depends_on:
+          - postgres
+        volumes:
+            - .:/app
+        ports:
+            - 5000:5000
+        networks:
+            - masternet 
+volumes:
+    psql:
+        driver: local
+networks:
+    masternet:
