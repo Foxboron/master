@@ -1,0 +1,221 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Format: 1.0
+Source: sshpubkeys
+Binary: python-sshpubkeys python3-sshpubkeys
+Architecture: all
+Version: 3.1.0-1
+Checksums-Md5:
+ 35f23dd3983929a8a0847c3c59e90a12 10352 python-sshpubkeys_3.1.0-1_all.deb
+ 09e0851fb4c28e4b03ae64e935f161a1 12740 python3-sshpubkeys_3.1.0-1_all.deb
+Checksums-Sha1:
+ 2e83da782d0d05a46e90335c2afc2bd55938b02b 10352 python-sshpubkeys_3.1.0-1_all.deb
+ df5fa2090a1dfe8577e75af959429d4ff3304f75 12740 python3-sshpubkeys_3.1.0-1_all.deb
+Checksums-Sha256:
+ 8e69d5cbdc6eb2c90a522bbca949b4f3565f5d55c4c01542a710c8df4ae2e34d 10352 python-sshpubkeys_3.1.0-1_all.deb
+ 8234484139230459733466ef7e64176f109718ea3fbec7da5c124d7508c4f914 12740 python3-sshpubkeys_3.1.0-1_all.deb
+Build-Origin: Debian
+Build-Architecture: amd64
+Build-Kernel-Version: 4.9.0-8-amd64 #1 SMP Debian 4.9.110-3+deb9u6 (2018-10-08)
+Build-Date: Tue, 04 Dec 2018 20:37:42 +0000
+Build-Path: /build/sshpubkeys-3.1.0/sshpubkeys-3.1.0
+Installed-Build-Depends:
+ autoconf (= 2.69-11),
+ automake (= 1:1.16.1-4),
+ autopoint (= 0.19.8.1-9),
+ autotools-dev (= 20180224.1),
+ base-files (= 10.1),
+ base-passwd (= 3.5.45),
+ bash (= 4.4.18-3.1),
+ binutils (= 2.31.1-9),
+ binutils-common (= 2.31.1-9),
+ binutils-x86-64-linux-gnu (= 2.31.1-9),
+ bsdmainutils (= 11.1.2+b1),
+ bsdutils (= 1:2.32.1-0.2),
+ build-essential (= 12.5),
+ bzip2 (= 1.0.6-9),
+ coreutils (= 8.30-1),
+ cpp (= 4:8.2.0-2),
+ cpp-8 (= 8.2.0-10),
+ dash (= 0.5.10.2-1),
+ debconf (= 1.5.69),
+ debhelper (= 11.5.3),
+ debianutils (= 4.8.6),
+ dh-autoreconf (= 19),
+ dh-python (= 3.20180927),
+ dh-strip-nondeterminism (= 0.45.0-1),
+ diffutils (= 1:3.6-1),
+ dpkg (= 1.19.2),
+ dpkg-dev (= 1.19.2),
+ dwz (= 0.12-2),
+ fdisk (= 2.32.1-0.2),
+ file (= 1:5.34-2),
+ findutils (= 4.6.0+git+20181018-1),
+ g++ (= 4:8.2.0-2),
+ g++-8 (= 8.2.0-10),
+ gcc (= 4:8.2.0-2),
+ gcc-8 (= 8.2.0-10),
+ gcc-8-base (= 8.2.0-10),
+ gettext (= 0.19.8.1-9),
+ gettext-base (= 0.19.8.1-9),
+ grep (= 3.1-2),
+ groff-base (= 1.22.3-10),
+ gzip (= 1.9-2.1),
+ hostname (= 3.21),
+ init-system-helpers (= 1.56),
+ intltool-debian (= 0.35.0+20060710.4),
+ libacl1 (= 2.2.52-3+b1),
+ libarchive-zip-perl (= 1.64-1),
+ libasan5 (= 8.2.0-10),
+ libatomic1 (= 8.2.0-10),
+ libattr1 (= 1:2.4.47-2+b2),
+ libaudit-common (= 1:2.8.4-2),
+ libaudit1 (= 1:2.8.4-2),
+ libbinutils (= 2.31.1-9),
+ libblkid1 (= 2.32.1-0.2),
+ libbsd0 (= 0.9.1-1),
+ libbz2-1.0 (= 1.0.6-9),
+ libc-bin (= 2.28-1),
+ libc-dev-bin (= 2.28-1),
+ libc6 (= 2.28-1),
+ libc6-dev (= 2.28-1),
+ libcap-ng0 (= 0.7.9-1+b1),
+ libcc1-0 (= 8.2.0-10),
+ libcroco3 (= 0.6.12-2),
+ libdb5.3 (= 5.3.28+dfsg1-0.2),
+ libdebconfclient0 (= 0.245),
+ libdpkg-perl (= 1.19.2),
+ libelf1 (= 0.175-1),
+ libexpat1 (= 2.2.6-1),
+ libfdisk1 (= 2.32.1-0.2),
+ libffi6 (= 3.2.1-9),
+ libfile-stripnondeterminism-perl (= 0.45.0-1),
+ libgcc-8-dev (= 8.2.0-10),
+ libgcc1 (= 1:8.2.0-10),
+ libgcrypt20 (= 1.8.4-3),
+ libgdbm-compat4 (= 1.18.1-2),
+ libgdbm6 (= 1.18.1-2),
+ libglib2.0-0 (= 2.58.1-2),
+ libgmp10 (= 2:6.1.2+dfsg-3),
+ libgomp1 (= 8.2.0-10),
+ libgpg-error0 (= 1.32-3),
+ libicu63 (= 63.1-4),
+ libisl19 (= 0.20-2),
+ libitm1 (= 8.2.0-10),
+ liblsan0 (= 8.2.0-10),
+ liblz4-1 (= 1.8.2-1),
+ liblzma5 (= 5.2.2-1.3),
+ libmagic-mgc (= 1:5.34-2),
+ libmagic1 (= 1:5.34-2),
+ libmount1 (= 2.32.1-0.2),
+ libmpc3 (= 1.1.0-1),
+ libmpdec2 (= 2.4.2-2),
+ libmpfr6 (= 4.0.1-1),
+ libmpx2 (= 8.2.0-10),
+ libncurses6 (= 6.1+20181013-1),
+ libncursesw6 (= 6.1+20181013-1),
+ libpam-modules (= 1.1.8-3.8),
+ libpam-modules-bin (= 1.1.8-3.8),
+ libpam-runtime (= 1.1.8-3.8),
+ libpam0g (= 1.1.8-3.8),
+ libpcre3 (= 2:8.39-11),
+ libperl5.28 (= 5.28.1-1),
+ libpipeline1 (= 1.5.0-2),
+ libpython-stdlib (= 2.7.15-3),
+ libpython2-stdlib (= 2.7.15-3),
+ libpython2.7-minimal (= 2.7.15-5),
+ libpython2.7-stdlib (= 2.7.15-5),
+ libpython3-stdlib (= 3.7.1-2),
+ libpython3.6-minimal (= 3.6.7-1),
+ libpython3.6-stdlib (= 3.6.7-1),
+ libpython3.7-minimal (= 3.7.1-1),
+ libpython3.7-stdlib (= 3.7.1-1),
+ libquadmath0 (= 8.2.0-10),
+ libreadline7 (= 7.0-5),
+ libseccomp2 (= 2.3.3-3),
+ libselinux1 (= 2.8-1+b1),
+ libsigsegv2 (= 2.12-2),
+ libsmartcols1 (= 2.32.1-0.2),
+ libsqlite3-0 (= 3.25.3-2),
+ libssl1.1 (= 1.1.1a-1),
+ libstdc++-8-dev (= 8.2.0-10),
+ libstdc++6 (= 8.2.0-10),
+ libsystemd0 (= 239-13),
+ libtinfo6 (= 6.1+20181013-1),
+ libtool (= 2.4.6-6),
+ libtsan0 (= 8.2.0-10),
+ libubsan1 (= 8.2.0-10),
+ libudev1 (= 239-13),
+ libunistring2 (= 0.9.10-1),
+ libuuid1 (= 2.32.1-0.2),
+ libxml2 (= 2.9.4+dfsg1-7+b2),
+ linux-libc-dev (= 4.18.20-2),
+ login (= 1:4.5-1.1),
+ m4 (= 1.4.18-1),
+ make (= 4.2.1-1.2),
+ man-db (= 2.8.4-3),
+ mawk (= 1.3.3-17+b3),
+ mime-support (= 3.61),
+ ncurses-base (= 6.1+20181013-1),
+ ncurses-bin (= 6.1+20181013-1),
+ patch (= 2.7.6-3),
+ perl (= 5.28.1-1),
+ perl-base (= 5.28.1-1),
+ perl-modules-5.28 (= 5.28.1-1),
+ po-debconf (= 1.0.21),
+ python (= 2.7.15-3),
+ python-all (= 2.7.15-3),
+ python-crypto (= 2.6.1-9+b1),
+ python-ecdsa (= 0.13-3),
+ python-minimal (= 2.7.15-3),
+ python-pkg-resources (= 40.5.0-1),
+ python-setuptools (= 40.5.0-1),
+ python-six (= 1.11.0-2),
+ python2 (= 2.7.15-3),
+ python2-minimal (= 2.7.15-3),
+ python2.7 (= 2.7.15-5),
+ python2.7-minimal (= 2.7.15-5),
+ python3 (= 3.7.1-2),
+ python3-all (= 3.7.1-2),
+ python3-crypto (= 2.6.1-9+b1),
+ python3-distutils (= 3.7.1-1),
+ python3-ecdsa (= 0.13-3),
+ python3-lib2to3 (= 3.7.1-1),
+ python3-minimal (= 3.7.1-2),
+ python3-pkg-resources (= 40.5.0-1),
+ python3-setuptools (= 40.5.0-1),
+ python3-six (= 1.11.0-2),
+ python3.6 (= 3.6.7-1),
+ python3.6-minimal (= 3.6.7-1),
+ python3.7 (= 3.7.1-1),
+ python3.7-minimal (= 3.7.1-1),
+ readline-common (= 7.0-5),
+ sed (= 4.5-2),
+ sensible-utils (= 0.0.12),
+ sysvinit-utils (= 2.92~beta-2),
+ tar (= 1.30+dfsg-3),
+ util-linux (= 2.32.1-0.2),
+ xz-utils (= 5.2.2-1.3),
+ zlib1g (= 1:1.2.11.dfsg-1)
+Environment:
+ DEB_BUILD_OPTIONS="buildinfo=+all reproducible=+all parallel=16"
+ LANG="C"
+ LC_ALL="POSIX"
+ SOURCE_DATE_EPOCH="1536410112"
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEkYsZWW0kFhKQ1TGt3EoFgrNZAWUFAlwG5ZcACgkQ3EoFgrNZ
+AWVAig//fgDeYlYxTvRiEgn3c5/QBL6aPb5WuEXJo/HC2leVb2oVUkNg0D0rB7aq
+UXGANEqkUxjAfhXLwCgMcbrMvsRZkpkokHPo1o/d4q2ofc8lnjq7HCakpKzACSEW
+dJ7cc7sgF2FlyEwrRjxp429urOwIa5uopbfLhz9Sykjk3P+sAl2xkrvoZBz9IPQM
+xM/J1pfivLB8a+gVkGumi7l6fmdYWI00d28WCaMKgzEA5fxt1okMbCc4Mvjo5o32
+RroL3PdupdhhO1sjZCnT7cr/VR3gfAAqGifsstjtgv4HL9Emzz/eBagSZiLtt4Sn
+yWpHfZyTnCgT/pII8N2uOTocmMp80KoV4lhbP5ITPqepgXH/1ZxkzD40UQcn7kJS
+4BbalwgD1Z7E99TiuU3JmUvwWGQJ8xoETcwONF8e9Uwh/VvNL0HpSSujF1CsVBub
+Zwixy06/k3WCKT/1lJxNURryqkpKZ6yy9l6hiksk2xg2x/9uxAXBTsbd+HmvoHXL
+ea12cuvAreYaKgjLrQnax94+4W5Mb9B1syDVXH8PYubJLwn2v7d5ifjIMHk7Jk4v
+W3RPddBtE+hF/S8eoFutDpyFqhTe4e2bDJltGbMruPIbN7dWgIejOqsfGl+1Zy7F
+b7u0VPhlOxls4rKSxNtv9Ia5tlvqGDdtjd7SwsLKs7zk54g7E6g=
+=NZoc
+-----END PGP SIGNATURE-----

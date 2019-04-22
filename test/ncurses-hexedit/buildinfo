@@ -1,0 +1,194 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Format: 1.0
+Source: ncurses-hexedit
+Binary: ncurses-hexedit
+Architecture: amd64
+Version: 0.9.7+orig-5
+Checksums-Md5:
+ 487dade9f75a365190c1313b36918b3f 88260 ncurses-hexedit-dbgsym_0.9.7+orig-5_amd64.deb
+ 08cc47ee6bbbeccb4ade44482e582e0b 68008 ncurses-hexedit_0.9.7+orig-5_amd64.deb
+Checksums-Sha1:
+ a3c16ac6956a91dc99be92015dfb347639e8209a 88260 ncurses-hexedit-dbgsym_0.9.7+orig-5_amd64.deb
+ 4baf96bd739088cdc960a9e9493be9f5d1f93fa5 68008 ncurses-hexedit_0.9.7+orig-5_amd64.deb
+Checksums-Sha256:
+ 52a87c7e425e246f68621481ee7eac3ad622d68ec3a812ccfdd0f1d47bf28261 88260 ncurses-hexedit-dbgsym_0.9.7+orig-5_amd64.deb
+ eef38c6594b4ed4cb1c2061e11a444c412a870712f191e36ce75b23002991972 68008 ncurses-hexedit_0.9.7+orig-5_amd64.deb
+Build-Origin: Debian
+Build-Architecture: amd64
+Build-Kernel-Version: 4.9.0-8-amd64 #1 SMP Debian 4.9.130-2 (2018-10-27)
+Build-Date: Tue, 04 Dec 2018 21:09:00 +0000
+Build-Path: /build/1st/ncurses-hexedit-0.9.7+orig
+Installed-Build-Depends:
+ autoconf (= 2.69-11),
+ automake (= 1:1.16.1-4),
+ autopoint (= 0.19.8.1-9),
+ autotools-dev (= 20180224.1),
+ base-files (= 10.1),
+ base-passwd (= 3.5.45),
+ bash (= 4.4.18-3.1),
+ binutils (= 2.31.1-9),
+ binutils-common (= 2.31.1-9),
+ binutils-x86-64-linux-gnu (= 2.31.1-9),
+ bsdmainutils (= 11.1.2+b1),
+ bsdutils (= 1:2.32.1-0.2),
+ build-essential (= 12.5),
+ bzip2 (= 1.0.6-9),
+ coreutils (= 8.30-1),
+ cpp (= 4:8.2.0-2),
+ cpp-7 (= 7.3.0-23),
+ cpp-8 (= 8.2.0-10),
+ dash (= 0.5.10.2-1),
+ debconf (= 1.5.69),
+ debhelper (= 11.5.3),
+ debianutils (= 4.8.6),
+ dh-autoreconf (= 19),
+ dh-strip-nondeterminism (= 0.45.0-1),
+ diffutils (= 1:3.6-1),
+ dpkg (= 1.19.2),
+ dpkg-dev (= 1.19.2),
+ dwz (= 0.12-2),
+ fdisk (= 2.32.1-0.2),
+ file (= 1:5.34-2),
+ findutils (= 4.6.0+git+20181018-1),
+ g++ (= 4:8.2.0-2),
+ g++-8 (= 8.2.0-10),
+ gcc (= 4:8.2.0-2),
+ gcc-7 (= 7.3.0-23),
+ gcc-7-base (= 7.3.0-23),
+ gcc-8 (= 8.2.0-10),
+ gcc-8-base (= 8.2.0-10),
+ gettext (= 0.19.8.1-9),
+ gettext-base (= 0.19.8.1-9),
+ grep (= 3.1-2),
+ groff-base (= 1.22.3-10),
+ gzip (= 1.9-2.1),
+ hostname (= 3.21),
+ init-system-helpers (= 1.56),
+ intltool-debian (= 0.35.0+20060710.4),
+ libacl1 (= 2.2.52-3+b1),
+ libarchive-zip-perl (= 1.64-1),
+ libasan4 (= 7.3.0-23),
+ libasan5 (= 8.2.0-10),
+ libatomic1 (= 8.2.0-10),
+ libattr1 (= 1:2.4.47-2+b2),
+ libaudit-common (= 1:2.8.4-2),
+ libaudit1 (= 1:2.8.4-2),
+ libbinutils (= 2.31.1-9),
+ libblkid1 (= 2.32.1-0.2),
+ libbsd0 (= 0.9.1-1),
+ libbz2-1.0 (= 1.0.6-9),
+ libc-bin (= 2.28-1),
+ libc-dev-bin (= 2.28-1),
+ libc6 (= 2.28-1),
+ libc6-dev (= 2.28-1),
+ libcap-ng0 (= 0.7.9-1+b1),
+ libcc1-0 (= 8.2.0-10),
+ libcilkrts5 (= 7.3.0-23),
+ libcroco3 (= 0.6.12-2),
+ libdb5.3 (= 5.3.28+dfsg1-0.2),
+ libdebconfclient0 (= 0.245),
+ libdpkg-perl (= 1.19.2),
+ libelf1 (= 0.175-1),
+ libfdisk1 (= 2.32.1-0.2),
+ libffi6 (= 3.2.1-9),
+ libfile-stripnondeterminism-perl (= 0.45.0-1),
+ libgcc-7-dev (= 7.3.0-23),
+ libgcc-8-dev (= 8.2.0-10),
+ libgcc1 (= 1:8.2.0-10),
+ libgcrypt20 (= 1.8.4-3),
+ libgdbm-compat4 (= 1.18.1-2),
+ libgdbm6 (= 1.18.1-2),
+ libglib2.0-0 (= 2.58.1-2),
+ libgmp10 (= 2:6.1.2+dfsg-3),
+ libgomp1 (= 8.2.0-10),
+ libgpg-error0 (= 1.32-3),
+ libicu63 (= 63.1-4),
+ libisl19 (= 0.20-2),
+ libitm1 (= 8.2.0-10),
+ liblsan0 (= 8.2.0-10),
+ liblz4-1 (= 1.8.2-1),
+ liblzma5 (= 5.2.2-1.3),
+ libmagic-mgc (= 1:5.34-2),
+ libmagic1 (= 1:5.34-2),
+ libmount1 (= 2.32.1-0.2),
+ libmpc3 (= 1.1.0-1),
+ libmpfr6 (= 4.0.1-1),
+ libmpx2 (= 8.2.0-10),
+ libncurses-dev (= 6.1+20181013-1),
+ libncurses6 (= 6.1+20181013-1),
+ libncursesw6 (= 6.1+20181013-1),
+ libpam-modules (= 1.1.8-3.8),
+ libpam-modules-bin (= 1.1.8-3.8),
+ libpam-runtime (= 1.1.8-3.8),
+ libpam0g (= 1.1.8-3.8),
+ libpcre3 (= 2:8.39-11),
+ libperl5.28 (= 5.28.1-1),
+ libpipeline1 (= 1.5.0-2),
+ libquadmath0 (= 8.2.0-10),
+ libseccomp2 (= 2.3.3-3),
+ libselinux1 (= 2.8-1+b1),
+ libsigsegv2 (= 2.12-2),
+ libsmartcols1 (= 2.32.1-0.2),
+ libstdc++-8-dev (= 8.2.0-10),
+ libstdc++6 (= 8.2.0-10),
+ libsystemd0 (= 239-13),
+ libtext-unidecode-perl (= 1.30-1),
+ libtinfo6 (= 6.1+20181013-1),
+ libtool (= 2.4.6-6),
+ libtsan0 (= 8.2.0-10),
+ libubsan0 (= 7.3.0-23),
+ libubsan1 (= 8.2.0-10),
+ libudev1 (= 239-13),
+ libunistring2 (= 0.9.10-1),
+ libuuid1 (= 2.32.1-0.2),
+ libxml-libxml-perl (= 2.0132+dfsg-2+b1),
+ libxml-namespacesupport-perl (= 1.12-1),
+ libxml-sax-base-perl (= 1.09-1),
+ libxml-sax-perl (= 1.00+dfsg-1),
+ libxml2 (= 2.9.4+dfsg1-7+b2),
+ linux-libc-dev (= 4.18.20-2),
+ login (= 1:4.5-1.1),
+ m4 (= 1.4.18-1),
+ make (= 4.2.1-1.2),
+ man-db (= 2.8.4-3),
+ mawk (= 1.3.3-17+b3),
+ ncurses-base (= 6.1+20181013-1),
+ ncurses-bin (= 6.1+20181013-1),
+ patch (= 2.7.6-3),
+ perl (= 5.28.1-1),
+ perl-base (= 5.28.1-1),
+ perl-modules-5.28 (= 5.28.1-1),
+ po-debconf (= 1.0.21),
+ sed (= 4.5-2),
+ sensible-utils (= 0.0.12),
+ sysvinit-utils (= 2.92~beta-2),
+ tar (= 1.30+dfsg-3),
+ tex-common (= 6.10),
+ texinfo (= 6.5.0.dfsg.1-4+b1),
+ ucf (= 3.0038),
+ util-linux (= 2.32.1-0.2),
+ xz-utils (= 5.2.2-1.3),
+ zlib1g (= 1:1.2.11.dfsg-1)
+Environment:
+ DEB_BUILD_OPTIONS="buildinfo=+all reproducible=+all parallel=15"
+ LANG="C"
+ LC_ALL="POSIX"
+ SOURCE_DATE_EPOCH="1529611346"
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE/sRoctgH8HX2AftNrXJ9htf3LzYFAlwG7O4ACgkQrXJ9htf3
+Lza19xAAqd32FWnYKP0jZS+JshXxTNqYlreNWf24KMvrmdbElvtF9agIrkrqlWq7
+Lc5iX/glKKvwiYJ2KFUo/NPEgtZnlC3l7aEHOEWqRjU7+6nIwsE5kc/zWcaLAsSQ
+Bw3CR5/bZHDZzsaDDa/Dmof1n2XUveVxHG70DLWaYorM2qEw436iohEQMlegkDHn
+bwWg4f/6f6zzpisOUPtVVSQcD+mpBdZCw/I39rHrTK5qtQrJ90q2BcdTUEpC40m7
+B1YvzbPHAJMZnPUhb9pdvV8I7FnIHkaNr3YNFFOedoupmduuk5shdQozpAjJjwab
+TOW4ePMRV7ZepxPvmRaJa/INpGZQUpml25bgQwtmcqBmUzNguB3jdj4E+l2bHF6k
+Q/sWvhwp6ACioXK0xxbBCZuPwlhlccXdbtRdfYMRke1CjZ41D4zayzEy1EQl/bWQ
+Xs/YI0YJ5Z0UNrRlI0IWMEQH5xVpvX1wSdhNKT9aoMfi8aujF/64FmtG/0xvEdLd
+Y9AwETWacMlLZuKvfZitGA7nPC7+jeAWEouk5bsFNDsvXzW61VOf+YxmSKYN3WFH
+eOzYBs3sDqCJmyUJ3xehPWc7WhbOEN2shSwey2fiibsNryViVrAAMfcdoYHIvpoe
+hHX5ZpCTD/IXeciz8jkeCsgHNEajquicSyphTKzKk0iHhoIo4aw=
+=ECpx
+-----END PGP SIGNATURE-----
