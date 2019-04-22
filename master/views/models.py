@@ -7,7 +7,7 @@ from debian.deb822 import Deb822
 
 from master.app import app
 from master.db import db
-from master.models import Buildinfo, Package, Buildinfo, LinkMetadata, Version
+from master.models import Buildinfo, Package, Buildinfo, LinkMetadata, Version, append
 
 
 def json_response(func):
@@ -44,6 +44,7 @@ def api_buildinfo_id():
     return "Ok?"
 
 @app.route('/new_build', methods=['POST'])
+@json_response
 def new_build():
     metadata = request.files['metadata']
     buildinfo = request.files['buildinfo']
@@ -56,12 +57,22 @@ def new_build():
             if item[0] == 'Version':
                 version = item[1]
     buildinfo.seek(0)
-
     pkg = db.get_or_create(Package, name=source)
     ver = db.get_or_create(Version, version=version, package=pkg)
-    db.get_or_create(LinkMetadata, version=ver)
-    db.get_or_create(Buildinfo, version=ver)
+    db.get_or_create(LinkMetadata, version=ver, text=metadata.read())
+    db.get_or_create(Buildinfo, version=ver, text=buildinfo.read())
     db.session.commit()
+    j = {"type": "inclusion",
+         "package": source,
+         "version": source,
+         "linkmetadata": metadata.read(),
+         "buildinfo": buildinfo.read()}
+    try:
+        node = append(j)
+    except:
+        return {"status": "Could not append"}, 400
+    return {"status": "ok",
+            "node": node.to_json()}, 200
     return
 
 @app.route('/api/buildinfos', methods=['PUT', 'POST', 'GET'])
