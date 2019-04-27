@@ -7,7 +7,7 @@ from debian.deb822 import Deb822
 
 from master.app import app
 from master.db import db
-from master.models import Buildinfo, Package, Buildinfo, LinkMetadata, Version, append
+from master.models import  Package, Buildinfo, LinkMetadata, Version, append
 
 
 def json_response(func):
@@ -57,10 +57,11 @@ def new_build():
             if item[0] == 'Version':
                 version = item[1]
     buildinfo.seek(0)
+    id = uuid.uuid4()
     pkg = db.get_or_create(Package, name=source)
     ver = db.get_or_create(Version, version=version, package=pkg)
-    db.get_or_create(LinkMetadata, version=ver, text=metadata.read())
-    db.get_or_create(Buildinfo, version=ver, text=buildinfo.read())
+    db.get_or_create(LinkMetadata, version=ver, text=metadata.read(), uuid=id)
+    db.get_or_create(Buildinfo, version=ver, text=buildinfo.read(), uuid=id)
     db.session.commit()
     j = {"type": "inclusion",
          "package": source,
