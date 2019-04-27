@@ -14,7 +14,7 @@ class Buildinfo(db.Model):
         db.Integer(), index=True, unique=True, primary_key=True, autoincrement=True
     )
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    text = db.Column(db.Text(), index=True, nullable=False)
+    text = db.Column(db.Text(), nullable=False)
     uuid = db.Column(UUIDType(binary=False))
     version = db.relationship("Version", back_populates="buildinfo")
     version_id = db.Column(db.Integer, db.ForeignKey("version.id"))
@@ -38,7 +38,7 @@ class LinkMetadata(db.Model):
         db.Integer(), index=True, unique=True, primary_key=True, autoincrement=True
     )
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    text = db.Column(db.Text(), index=True, nullable=False)
+    text = db.Column(db.Text(), nullable=False)
     uuid = db.Column(UUIDType(binary=False)) # Poor hack so we can group them properly
 
     version = db.relationship("Version", back_populates="linkmetadata")
