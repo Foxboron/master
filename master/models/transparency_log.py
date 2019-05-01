@@ -321,8 +321,6 @@ def graphviz_tree(number, tree):
     for v in tree:
         if not v:
             continue
-        # if v:
-        #     s.append(f"\"{v.get_name()}\";")
         if v.left:
             s.append(f"\"{v.get_name()}\" -- \"{v.left.get_name()}\";")
         if v.right:
@@ -332,8 +330,6 @@ def graphviz_tree(number, tree):
 
 
 def validate_chain(root, chain):
-    # Preload the requested node
-    # clone list
     chain = chain[:]
     s = chain.pop(0)[1]["hash"]
     for node in chain:

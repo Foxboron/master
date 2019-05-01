@@ -10,14 +10,11 @@ def init_keys():
         generate_and_write_ed25519_keypair(KEY_NAME, password=PASSWORD)
 
 def get_private_key():
-    if not os.path.isfile(KEY_NAME):
-        init_keys()
+    init_keys()
     return import_ed25519_privatekey_from_file(KEY_NAME, password=PASSWORD)
 
-
 def get_public_key():
-    if not os.path.isfile(KEY_NAME):
-        init_keys()
+    init_keys()
     return import_ed25519_publickey_from_file(KEY_NAME+'.pub')
 
 def sign_data(data):
