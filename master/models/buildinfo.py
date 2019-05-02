@@ -23,12 +23,12 @@ class Buildinfo(db.Model):
         return "<buildinfo: {}>".format(self.id)
 
     @recurse
-    def to_json(self, recurse=True):
+    def to_json(self):
         j = OrderedDict()
         j["id"] = self.id
         j["date"] = self.created
         j["text"] = self.text
-        j["versions"] = self.version.to_json(recurse=False)
+        j["versions"] = self.version.to_json()
         return j
 
 
@@ -48,12 +48,12 @@ class LinkMetadata(db.Model):
         return "<linkmetadata: {}>".format(self.id)
 
     @recurse
-    def to_json(self, recurse=True):
+    def to_json(self):
         j = OrderedDict()
         j["id"] = self.id
         j["text"] = self.text
         j["date"] = self.created
-        j["versions"] = self.version.to_json(recurse=False)
+        j["versions"] = self.version.to_json()
         return j
 
 
@@ -75,16 +75,16 @@ class Version(db.Model):
         return "<Version: {}>".format(self.version)
 
     @recurse
-    def to_json(self, recurse=True):
+    def to_json(self):
         j = OrderedDict()
         j["id"] = self.id
         j["date"] = self.created
         j["version"] = self.version
         j["linkmetadata"] = list(
-            map(lambda x: x.to_json(recurse=False), self.linkmetadata)
+            map(lambda x: x.to_json(), self.linkmetadata)
         )
-        j["buildinfo"] = list(map(lambda x: x.to_json(recurse=False), self.buildinfo))
-        j["package"] = self.package.to_json(recurse=False)
+        j["buildinfo"] = list(map(lambda x: x.to_json(), self.buildinfo))
+        j["package"] = self.package.to_json()
         return j
 
 
@@ -101,10 +101,10 @@ class Package(db.Model):
         return "<Package: {}>".format(self.name)
 
     @recurse
-    def to_json(self, recurse=True):
+    def to_json(self):
         j = OrderedDict()
         j["id"] = self.id
         j["date"] = self.created
         j["name"] = self.name
-        j["versions"] = list(map(lambda x: x.to_json(recurse=False), self.version))
+        j["versions"] = list(map(lambda x: x.to_json(), self.version))
         return j

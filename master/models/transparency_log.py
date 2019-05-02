@@ -91,7 +91,7 @@ class Node(db.Model):
         return h
 
     @recurse
-    def to_json(self, recurse=True):
+    def to_json(self):
         j = OrderedDict()
         j["id"] = self.id
         j["type"] = self.type
