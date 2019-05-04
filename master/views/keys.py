@@ -23,6 +23,6 @@ def verify_tree_root():
                  'sig': data["signature"]}
     verfied = verify_data(signature, data["hash"])
     return {"status": "ok",
-            "verified": verfied}, 400
+            "verified": verfied}, 200
 
 

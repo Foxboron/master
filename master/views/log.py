@@ -45,7 +45,10 @@ def log_get_tree_stats():
             bytes_used = humansize(db.engine.execute("SELECT sum(pgsize-unused) FROM dbstat WHERE name='node';").first()[0])
         else:
             bytes_used = db.engine.execute("SELECT sum(pgsize-unused) FROM dbstat WHERE name='node';").first()[0]
-    return {"root node": get_root_node().to_json(),
+    root = get_root_node()
+    if root:
+        root = root.to_json()
+    return {"root node": root,
             "level nodes": get_levels().count(),
             "leaf nodes": get_leafs().count(),
             "total nodes": get_all_nodes().count(),

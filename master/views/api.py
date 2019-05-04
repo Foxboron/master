@@ -40,8 +40,8 @@ def rebuilder_submit():
     j = {"type": "inclusion",
          "package": source,
          "version": version,
-         "linkmetadata": str(metadata.read()),
-         "buildinfo": str(buildinfo.read())}
+         "linkmetadata": metadata.read().decode("utf-8"),
+         "buildinfo": buildinfo.read().decode("utf-8")}
     try:
         node = append(j)
     except Exception as e:
@@ -65,9 +65,9 @@ def rebuilder_fetch(name, version):
 @json_response
 def rebuilder_revoke():
     data = request.get_json(silent=True)
-    if data.get("hash"):
+    if not data.get("hash"):
         return {"status": "Missing hash field"}, 400
-    if data.get("reason"):
+    if not data.get("reason"):
         return {"status": "Missing reason field"}, 400
 
     revoked_node = (db.session.query(Node).filter(Node.hash == data["hash"])).first()
