@@ -208,54 +208,58 @@ def inclusion_path(position):
         next_subroot = subroots(start, h)
         if next_subroot.get_child() and next_subroot.get_child().get_child():
             if next_subroot.get_child().is_left():
-                path.append(("LEFT", next_subroot))
-            else:
                 path.append(("RIGHT", next_subroot))
+            else:
+                path.append(("LEFT", next_subroot))
         else:
             if next_subroot.is_left():
-                path.append(("LEFT", next_subroot))
-            else:
                 path.append(("RIGHT", next_subroot))
+            else:
+                path.append(("LEFT", next_subroot))
         start += 2**h
-    path[-1] = ("LEFT", path[-1][1])
+    if len(path) > 0:
+        path[-1] = ("RIGHT", path[-1][1])
     return path
+
 
 def inclusion_proof(position):
-    path = [("LEFT", node.to_json()) for side, node in inclusion_path(position)]
+    path = inclusion_path(position)
+    path = [("LEFT", node.to_json()) for side, node in path]
     n = len(path)-1
-    path = (path[n:] + path[:n])
+    if len(path) == 1:
+        return path
+    path = get_path(path, n)
     return path
 
-
-def straighten_path(signed_hashes, start):
-    signed_hashes = list(signed_hashes)
-    if not signed_hashes: return None
-    if len(signed_hashes) <= 1: return signed_hashes[0][1]
-    i = start
-    ret = []
-    h = list(signed_hashes[i])
-    h[0] = "LEFT"
-    ret.append(h)
-    while len(signed_hashes) > 1:
-        if signed_hashes[i][0] == "LEFT":
-            if i == 0: new_sign = "LEFT"
-            else: new_sign = signed_hashes[i + 1][0]
-            new_hash = (signed_hashes[i][1], signed_hashes[i + 1][1])
-            h = list(signed_hashes[i+1])
-            h[0] = "RIGHT"
-            ret.append(h)
-            move = +1
-        else:
-            new_sign = signed_hashes[i - 1][0]
-            new_hash = (signed_hashes[i - 1][1], signed_hashes[i][1])
-            h = list(signed_hashes[i-1])
-            h[0] = "LEFT"
-            ret.append(h)
-            move = -1
-        signed_hashes[i] = (new_sign, new_hash)
-        del signed_hashes[i+move]
-        if move < 0: i -= 1
-    return ret
+def get_path(signed_hashes, start):
+        signed_hashes = list(signed_hashes)
+        ret = []
+        if signed_hashes == []: return None
+        if len(signed_hashes) <= 1: return ret
+        i = start
+        while len(signed_hashes) > 1:
+            if signed_hashes[i][0] == "RIGHT":
+                if i == 0: new_sign = "RIGHT"
+                else: new_sign = signed_hashes[i + 1][0]
+                new_hash = [signed_hashes[i][1], signed_hashes[i + 1][1]]
+                if not isinstance(signed_hashes[i+1][1], list):
+                    ret.append(["RIGHT", signed_hashes[i+1][1]])
+                if not isinstance(signed_hashes[i][1], list):
+                    ret.append(["LEFT", signed_hashes[i][1]])
+                move = +1
+            else:
+                # Pair with the left neighbour
+                new_sign = signed_hashes[i - 1][0]
+                new_hash = [signed_hashes[i - 1][1], signed_hashes[i][1]]
+                move = -1
+                if not isinstance(signed_hashes[i][1], list):
+                    ret.append(["RIGHT", signed_hashes[i][1]])
+                if not isinstance(signed_hashes[i-1][1], list):
+                    ret.append(["LEFT", signed_hashes[i-1][1]])
+            signed_hashes[i] = (new_sign, new_hash)
+            del signed_hashes[i + move]
+            if move < 0: i -= 1
+        return ret
 
 def consistency_path(position):
     path = inclusion_path(position)
@@ -265,9 +269,9 @@ def consistency_path(position):
         last_root = subpath[-1][-1]
         if last_root is last_root.get_child().left:
             if last_root.get_child().is_right():
-                other_side.append(("RIGHT", last_root.get_child().right))
-            else:
                 other_side.append(("LEFT", last_root.get_child().right))
+            else:
+                other_side.append(("RIGHT", last_root.get_child().right))
             subpath = subpath[:-1]
         else:
             subpath = subpath[:-2]
@@ -276,19 +280,19 @@ def consistency_path(position):
 
 def consistency_proof(position):
     path, other_side = consistency_path(position)
-    path = [(side, node.to_json()) for side, node in path]
+    full_path = path+other_side
     n = len(path)-1
-    other_side = [(side, node.to_json()) for side, node in other_side]
-    full_path = straighten_path(path+other_side, n)
-    path = [("LEFT", node) for side, node in path]
-    path = (path[n:] + path[:n])
+    if position == get_leafs().count():
+        full_path = [("LEFT", node.to_json()) for side, node in full_path]
+    else:
+        full_path = [(side, node.to_json()) for side, node in full_path]
+    full_path = get_path(full_path, n)
+    path = [("LEFT", node.to_json()) for side, node in path]
+    path = get_path(path, n)
     return path, full_path
 
 
-
 def create_level_node(left, right):
-    # Invalidate old children.
-    # Should probably do this in the ORM.
     right.children_left = None
     right.children_right = None
     left.children_left = None
@@ -330,8 +334,9 @@ def graphviz_tree(number, tree):
     s.append("}")
     return "\n".join(s)
 
-
 def validate_chain(root, chain):
+    if not chain:
+        return True
     chain = chain[:]
     s = chain.pop(0)[1]["hash"]
     for node in chain:
