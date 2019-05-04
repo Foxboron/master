@@ -18,11 +18,12 @@ services:
             VIZUALISER_ENV: production
             DATABASE_URL: "postgres://logger:logger@postgres:45792/logger"
             PYTHONUNBUFFERED: 1
+        restart: on-failure
         command:
             - /bin/bash
             - -c
             - |
-                sleep 5 # Need to wait for postgresql
+                sleep 7 # Need to wait for postgresql
                 python main.py
         depends_on:
           - postgres
