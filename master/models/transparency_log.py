@@ -159,6 +159,8 @@ def get_subtrees():
 def append(data):
     if get_leafs().count() == 0:
         n = create_data_node(data)
+        signature = sign_data(n.hash)
+        n.signature = signature["sig"]
         db.session.commit()
         return n
     subtrees = get_subtrees()
