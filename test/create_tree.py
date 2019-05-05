@@ -48,9 +48,11 @@ parser.add_argument('--pkgname', type=str)
 parser.add_argument('--version', type=str) 
 parser.add_argument('--revoke', action='store_true')
 parser.add_argument('--submit', action='store_true')
+parser.add_argument('--submissions', action='store_true')
 parser.add_argument('--new', action='store_true')
 parser.add_argument('--test-consistency', action='store_true')
 parser.add_argument('--test-inclusion', action='store_true')
+parser.add_argument('--test-revoke', action='store_true')
 args = parser.parse_args()
 
 if args.submit and not (args.buildinfo and args.metadata):
@@ -88,10 +90,7 @@ if args.append:
         write(i, duration, json)
 
 if args.submit:
-    print(args.buildinfo)
-    print(args.metadata)
     duration, json = submit_rebuild(args.buildinfo, args.metadata) 
-    print(json)
     i = json["leaf nodes"]-1
     write(i, duration, json)
 
@@ -104,8 +103,7 @@ if args.revoke:
     if not j:
         print("No such rebuild")
         sys.exit(1)
-    hash = j[0]["hash"]
-    payload = {"hash": hash,
+    payload = {"hash": j[0]["hash"],
                "reason": "Testing"}
     r = requests.post("http://127.0.0.1:5000/api/rebuilder/revoke", json=payload)
     if r.status_code != 200:
@@ -118,15 +116,20 @@ if args.test_consistency:
         if not line:
             continue
         _, hash, signature, count = line.split()
-        
+        print("Testing leaf count {}".format(count)) 
         r = requests.get("http://127.0.0.1:5000/api/log/tree/consistency/{}/{}".format(hash, count))
-        print("---")
-        if r.json()["inclusion"] == False:
+        if not r.json()["inclusion"]:
             print(count)
-            print(r)
-        if r.json()["consistency"] == False:
+            print(r.json())
+        if not r.json()["consistency"]:
             print(count)
-            print(r)
+            print(r.json())
+        payload = {"hash": hash,
+                   "signature": signature}
+        r = requests.post("http://127.0.0.1:5000/api/crypto/verify", json=payload)
+        if not r.json()["verified"]:
+            print(count)
+            print(r.json())
 
 if args.test_inclusion:
     f = open("roots.txt", "r").read().split("\n")
@@ -134,10 +137,42 @@ if args.test_inclusion:
         if not line:
             continue
         _, hash, signature, count = line.split()
+        print("Testing leaf count {}".format(count)) 
         r = requests.get("http://127.0.0.1:5000/api/log/tree/inclusion/{}/{}".format(hash, count))
-        print("---")
-        if r.json()["inclusion"] == False:
+        if not r.json()["inclusion"]:
             print(count)
             print(r)
-        print(r.json()["inclusion"])
+        payload = {"hash": hash,
+                   "signature": signature}
+        r = requests.post("http://127.0.0.1:5000/api/crypto/verify", json=payload)
+        if not r.json()["verified"]:
+            print(count)
+            print(r.json())
 
+from os import walk
+if args.submissions:
+    packages = []
+    for (dirpath, dirnames, filenames) in walk("submissions/"):
+        if not dirpath.split("/")[-1]:
+            continue
+        metadata = dirpath+"/metadata"
+        buildinfo = dirpath+"/buildinfo"
+        duration, json = submit_rebuild(buildinfo, metadata) 
+        i = json["leaf nodes"]-1
+        write(i, duration, json)
+
+if args.test_revoke:
+    rebuilder = "http://127.0.0.1:5000"
+    pkgname = "lostirc"
+    version = "0.4.6-4.2"
+    endpoint = "{}/api/rebuilder/fetch/{}/{}".format(rebuilder, pkgname, version)
+    r = requests.get(endpoint)
+    response = r.json()
+    revoked = []
+    for i in response:
+        if i["hash"] in revoked:
+            continue
+        if i["data"]["type"] == "revoke":
+            revoked.append(i["data"]["hash"])
+            continue
+        print(i["data"])
