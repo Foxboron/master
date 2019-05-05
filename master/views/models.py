@@ -15,6 +15,9 @@ def json_response(func):
     def wrapped(*args, **kwargs):
         response = func(*args, **kwargs)
         code = 200
+        if not response:
+            dump = json.dumps(response, indent=2, sort_keys=False)
+            return dump, code, {'Content-Type': 'application/json; charset=utf-8'}
         if isinstance(response, tuple):
             response, code = response
         if isinstance(response, list):
