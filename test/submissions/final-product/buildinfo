@@ -1,0 +1,36 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Format: 1.0
+Source: final-product
+Binary: python-objgraph python3-objgraph python-objgraph-doc
+Architecture: amd64
+Version: 0.0.0.0-0
+Build-Origin: Debian
+Build-Architecture: all
+Build-Kernel-Version: 4.9.0-8-amd64 #1 SMP Debian 4.9.130-2 (2018-10-27)
+Build-Date: Fri, 07 Dec 2018 15:49:43 +0000
+Build-Path: /build/final-product-0.0.0.0.0
+Installed-Build-Depends:
+ automake (= 1:1.16.1-4),
+Environment:
+ DEB_BUILD_OPTIONS="buildinfo=+all reproducible=+all parallel=15"
+ LANG="C"
+ LC_ALL="POSIX"
+ SOURCE_DATE_EPOCH="1478556738"
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEaTiHqw0WDC3qqcJfowrxFxh0s4wFAlwKlp0ACgkQowrxFxh0
+s4ynWRAAyu1i+IGo05pJIFrpEvlyvHr3gZnVn26hUAU3XdRjmRztRGZ2sSHDnd+r
+IxfmvLjO8z6kSvfax6belGTyrW5D02dD6wRmEB/7b0Nq/rA1ZXD3txz1UWnkPDD3
+/YfJUwSP592JqKc5VwQ+PhWHacGu98nqvD3SwbCEpURhAQqlCupXjmZ1LnUhEGcs
+DiZBWWRUek6Q/n8hfKBVU0WIXjZetJ29Be+Qnc/wz0X9ZxHmnVqUpVHhyMLL+pM+
+RJhbifahyT6QKlqZOQufUbSS/zWJZYBfdBzq7y/wo7MGdmxc6P+hbYxJEiuTSXJS
+g9qxFaFVt0efylKDDWOheSQevJYFc88x3pPZ2ILL6SvU+55GNdALE9XoC9tDeKUk
+l52zLsXCweR3HoG88YZqR6bdfFB9IbIjRmX+yl7r1050PuL2lC2AfUlNkTaoa6FO
+MvIgyBW+bK1ITiNqmM6z8ESeTt6X3IJ0R/ncvYQt6FFJw7TIjuB4bttYo2n1QgZP
+owP8QwGHutPw0PeftQ3pm1KKgyFL3I5vhdDETBUki9ZnJ2u2V5rX87HLjb9swNix
+3efeoDseKxx59qlZA95ghGeWnlTo5FCzaZhAJOl8Tuv9loD1+PAZywLxgOCwJsy9
+ss9a5DlK0DdK0eeNbyj7x15ND1MceN4RiruOj/7ip2HP7nNduuA=
+=aoBc
+-----END PGP SIGNATURE-----
