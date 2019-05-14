@@ -36,25 +36,55 @@ def write(i, duration, j):
     write_stats(i, duration, j)
     write_roots(i, duration, j)
 
+def compare_hash(node):
+    h = hashlib.sha512()
+    h.update(node["type"].encode('utf-8'))
+    for k, v in sorted(node["data"].items()):
+        h.update((k+v).encode('utf-8'))
+    h.update(node["left"].encode('utf-8'))
+    h.update(node["right"].encode('utf-8'))
+    print(h.hexdigest() == node["hash"])
+    return h.hexdigest() == node["hash"]
+
+def validate_chain(root, chain):
+    if not compare_hash(root):
+        return False
+    if not chain:
+        return True
+    chain = chain[:]
+    s = chain.pop(0)[1]["hash"]
+    for node in chain:
+        if not compare_hash(node[1]):
+            return False
+        h = hashlib.sha512()
+        if node[0] == "LEFT":
+            h.update(("level"+node[1]["hash"]+s).encode('utf-8'))
+        if node[0] == "RIGHT":
+            h.update(("level"+s+node[1]["hash"]).encode('utf-8'))
+        s = h.hexdigest()
+    print(root["hash"] == s)
+    return root["hash"] == s
+
 # try:
 #     requests.get("http://127.0.0.1:5000/", timeout=1)
 # except:
 #     print("No visualizer running")
 #     sys.exit()
 
-parser = argparse.ArgumentParser(description="My parser")
-parser.add_argument('--append', metavar='N', type=int, help='an integer for the accumulator')
-parser.add_argument('--buildinfo', type=str) 
-parser.add_argument('--metadata', type=str) 
-parser.add_argument('--pkgname', type=str) 
-parser.add_argument('--version', type=str) 
-parser.add_argument('--revoke', action='store_true')
-parser.add_argument('--submit', action='store_true')
-parser.add_argument('--submissions', action='store_true')
-parser.add_argument('--new', action='store_true')
-parser.add_argument('--test-consistency', action='store_true')
+parser = argparse.ArgumentParser(description="Create merkle tree")
+parser.add_argument('--append', metavar='N', type=int, help='Append nodes to the tree')
+parser.add_argument('--submit', action='store_true', help='Submit a rebuild')
+parser.add_argument('--buildinfo', type=str, help='Specify buildinfo for submit') 
+parser.add_argument('--metadata', type=str, help='Specify metadata for submit') 
+parser.add_argument('--revoke', action='store_true', help='Revoke a rebuild submission')
+parser.add_argument('--pkgname', type=str, help='Specify package name for revoke') 
+parser.add_argument('--version', type=str, help='Specify package version for revoke') 
+parser.add_argument('--submissions', action='store_true', help='Submit all rebuilds from folder')
+parser.add_argument('--new', action='store_true', help='Archive old insertion statistics')
+parser.add_argument('--test-consistency', action='store_true', help='Test consistency proofs')
 parser.add_argument('--test-inclusion', action='store_true')
-parser.add_argument('--test-revoke', action='store_true')
+parser.add_argument('--test-revoke', action='store_true', )
+parser.add_argument('--test-audit', type=int, help='Test audit path')
 args = parser.parse_args()
 
 if args.submit and not (args.buildinfo and args.metadata):
@@ -178,3 +208,14 @@ if args.test_revoke:
             revoked.append(i["data"]["hash"])
             continue
         print(i["data"])
+
+if args.test_audit:
+    r = requests.get("http://127.0.0.1:5000/api/log/tree/validate/id/{}".format(args.test_audit))
+    j = r.json()
+    if not j["validation"]:
+        print("Log validation failed")
+        sys.exit(1)
+    if not validate_chain(j["root"], j["path"]):
+        print("Can't validate locally")
+        sys.exit(1)
+
