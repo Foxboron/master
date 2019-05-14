@@ -1,8 +1,10 @@
-import requests
 import os
-import glob
-import argparse
 import sys
+import glob
+import hashlib
+import argparse
+
+import requests
 
 def get_stats():
     r = requests.get("http://127.0.0.1:5000/api/log/tree/stats")

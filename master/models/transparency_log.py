@@ -1,17 +1,16 @@
-import hashlib
 import math
 import json
+import hashlib
 from datetime import datetime
 from collections import OrderedDict
 
-from master.keys import sign_data
-from master.db import db
 from .util import recurse
+from master.db import db
+from master.keys import sign_data
 
 from sqlalchemy import event
-from sqlalchemy.dialects.postgresql import JSONB
-
 from sqlalchemy_utils import JSONType
+from sqlalchemy.dialects.postgresql import JSONB
 
 
 
@@ -77,7 +76,7 @@ class Node(db.Model):
             h = hashlib.sha512()
             h.update(self.type.encode('utf-8'))
             if self.data:
-                for k, v in self.data.items():
+                for k, v in sorted(self.data.items()):
                     h.update((k+v).encode('utf-8'))
             self.append_parents(h)
             self.hash = h.hexdigest()
