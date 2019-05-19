@@ -8,7 +8,7 @@ from master.app import app
 from master.models import Node
 from master.models import get_root_node, append, get_levels, get_all_nodes
 from master.models import get_leafs, validate_chain, get_all_nodes_in_tree, graphviz_tree
-from master.models import consistency_proof, inclusion_proof
+from master.models import consistency_proof, inclusion_proof, audit_proof
 from master.views.models import json_response
 
 
@@ -87,19 +87,6 @@ def log_get_hash(hash):
     return (db.session.query(Node).filter(Node.hash == hash)).first()
 
 
-def _get_validation_chain(node):
-    side = lambda x: "RIGHT" if x.is_right() else "LEFT"
-    path = [(side(node), node.to_json())]
-    while node.get_child() is not None:
-        if node.is_left():
-            path.append(("RIGHT", node.get_child().right.to_json()))
-        elif node.is_right():
-            path.append(("LEFT", node.get_child().left.to_json()))
-        node = node.get_child()
-    root = get_root_node()
-    return {"root": root.to_json(),
-            "path": path}
-
 
 @app.route("/api/log/tree/validate/hash/<hash>")
 @json_response
@@ -107,7 +94,7 @@ def log_get_validation(hash):
     node = (db.session.query(Node).filter(Node.hash == hash)).first()
     if node is None:
         return "No such object", 400
-    path = _get_validation_chain(node)
+    path = audit_proof(node)
     path["validation"] = validate_chain(path["root"], path["path"])
     print(path["validation"])
     return path
@@ -119,9 +106,8 @@ def log_get_validation_id(id):
     node = (db.session.query(Node).filter(Node.leaf_index == id)).first()
     if node is None:
         return {"status": "No such object"}, 400
-    path = _get_validation_chain(node)
+    path = audit_proof(node)
     path["validation"] = validate_chain(path["root"], path["path"])
-    print(path["validation"])
     return path
 
 @app.route("/api/log/tree/inclusion/<old_hash>/<int:leafs>")

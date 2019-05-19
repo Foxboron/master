@@ -5,6 +5,7 @@ from flask import request, g
 from master.db import db
 from master.app import app
 from master.models import append, Node, Package, Version, LinkMetadata, Buildinfo
+from master.models import audit_proof
 from master.views.models import json_response
 
 
@@ -58,7 +59,7 @@ def rebuilder_fetch(name, version):
             .filter(Node.data.op('->>')('version') == version)
             .order_by(Node.created.desc())
             ).all()
-    return records
+    return [[rec.to_json(), audit_proof(rec)] for rec in records]
 
 
 @app.route("/api/rebuilder/revoke", methods=['POST'])

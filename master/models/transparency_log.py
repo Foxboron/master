@@ -333,6 +333,19 @@ def graphviz_tree(number, tree):
     s.append("}")
     return "\n".join(s)
 
+def audit_proof(node):
+    side = lambda x: "RIGHT" if x.is_right() else "LEFT"
+    path = [(side(node), node.to_json())]
+    while node.get_child() is not None:
+        if node.is_left():
+            path.append(("RIGHT", node.get_child().right.to_json()))
+        elif node.is_right():
+            path.append(("LEFT", node.get_child().left.to_json()))
+        node = node.get_child()
+    root = get_root_node()
+    return {"root": root.to_json(),
+            "path": path}
+
 def validate_chain(root, chain):
     if not chain:
         return True
