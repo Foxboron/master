@@ -28,6 +28,10 @@ transport-test:
 	@docker-compose exec master make -C /app intoto-test
 	@echo -e "\e[1m[*] Running test suite...\e[0m"
 	@docker-compose up apt
+	@echo -e "\e[1m[*] Removing containers...\e[0m"
+	@docker-compose down
+	@docker-compose rm --force -v
+	@docker volume rm master_psql
 
 stress-test:
 	@echo -e "\e[1m[*] Starting\e[0m"
