@@ -33,6 +33,15 @@ services:
             - 5000:5000
         networks:
             - masternet 
+    apt:
+        build: 
+            context: https://github.com/Foxboron/apt-transport-in-toto.git#morten/intoto-transparency-overlay 
+            dockerfile: Dockerfile.apt
+        environment:
+            TOX_TESTENV_PASSENV: "TOX_INTOTO_REBUILDER1"
+            TOX_INTOTO_REBUILDER1: "http://master:5000"
+        networks:
+            - masternet 
 volumes:
     psql:
         driver: local
