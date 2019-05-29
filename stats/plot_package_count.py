@@ -1,6 +1,8 @@
+import sys
 import pandas as pd
 import matplotlib.pyplot as plt
-data = pd.read_csv("stats.txt", sep=" ")
+
+data = pd.read_csv(sys.argv[1], sep=" ")
 
 f = plt.figure()
 

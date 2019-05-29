@@ -15,9 +15,11 @@ intoto-data:
 	(cd test; python create_tree.py --new --append 10)
 	(cd test; python create_tree.py --submissions)
 
-
 stress-data:
-	(cd test; python create_tree.py --new --append 110000)
+	(cd test; python create_tree.py --new --append 113054)
+
+small-stress-data:
+	(cd test; python create_tree.py --new --append 1000)
 
 transport-test:
 	@echo -e "\e[1m[*] Starting\e[0m"
@@ -40,6 +42,21 @@ stress-test:
 	@while ! curl "0.0.0.0:5000/api/log/tree/stats" &> /dev/null; do sleep 3; done
 	@echo -e "\e[1m[*] Adding 110000 elements to the tree - THIS WILL TAKE A WHILE...\e[0m"
 	@docker-compose exec master make -C /app stress-data 
+	@echo -e "\e[1m[*] Copying stats.txt and roots.txt locally...\e[0m"
+	@docker-compose exec master cat /app/test/stats.txt > stats.txt
+	@docker-compose exec master cat /app/test/roots.txt > roots.txt
+	@echo -e "\e[1m[*] Removing containers...\e[0m"
+	@docker-compose down
+	@docker-compose rm --force -v
+	@docker volume rm master_psql
+
+small-stress-test:
+	@echo -e "\e[1m[*] Starting\e[0m"
+	@docker-compose up -d postgres master
+	@echo -e "\e[1m[*] Waiting for system to start...\e[0m"
+	@while ! curl "0.0.0.0:5000/api/log/tree/stats" &> /dev/null; do sleep 3; done
+	@echo -e "\e[1m[*] Adding 1000 elements to the tree...\e[0m"
+	@docker-compose exec master make -C /app small-stress-data 
 	@echo -e "\e[1m[*] Copying stats.txt and roots.txt locally...\e[0m"
 	@docker-compose exec master cat /app/test/stats.txt > stats.txt
 	@docker-compose exec master cat /app/test/roots.txt > roots.txt
